@@ -12,9 +12,8 @@
 
   <properties>
     <cflags>-O2 -g -pipe -Wall -fPIC -Werror=format-security
-      -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
-      --param=ssp-buffer-size=4 -grecord-gcc-switches -m32
-      -fasynchronous-unwind-tables -mtune=atom -march=i686</cflags>
+      -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4
+      -m32 -fasynchronous-unwind-tables -mtune=atom -march=i686</cflags>
     <ldflags>-m32 -shared</ldflags>
   </properties>
 
