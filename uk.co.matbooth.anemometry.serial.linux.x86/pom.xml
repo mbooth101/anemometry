@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>uk.co.matbooth.anemometry</groupId>
+    <artifactId>anemometry-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>uk.co.matbooth.anemometry.serial.linux.x86</artifactId>
+  <packaging>eclipse-plugin</packaging>
+
+  <properties>
+    <cflags>-O2 -g -pipe -Wall -fPIC -Werror=format-security
+      -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+      --param=ssp-buffer-size=4 -grecord-gcc-switches -m32
+      -fasynchronous-unwind-tables -mtune=atom -march=i686</cflags>
+    <ldflags>-m32 -shared</ldflags>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>uk.co.matbooth.anemometry</groupId>
+      <artifactId>uk.co.matbooth.anemometry.serial</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <environments>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>native-maven-plugin</artifactId>
+        <configuration>
+          <javahOutputFileName>SerialPort.h</javahOutputFileName>
+          <javahClassNames>
+            <javahClassName>uk.co.matbooth.anemometry.serial.SerialPort</javahClassName>
+          </javahClassNames>
+          <javahOS>linux</javahOS>
+          <sources>
+            <source>
+              <directory>../uk.co.matbooth.anemometry.serial/native</directory>
+              <fileNames>
+                <fileName>SerialPort.c</fileName>
+              </fileNames>
+            </source>
+          </sources>
+          <compilerExecutable>gcc</compilerExecutable>
+          <compilerStartOptions>
+            <compilerStartOption>${cflags}</compilerStartOption>
+          </compilerStartOptions>
+          <linkerExecutable>gcc</linkerExecutable>
+          <linkerStartOptions>
+            <linkerStartOption>${ldflags}</linkerStartOption>
+          </linkerStartOptions>
+          <linkerFinalName>libserial</linkerFinalName>
+          <linkerFinalNameExt>so</linkerFinalNameExt>
+          <linkerOutputDirectory>os/linux/x86</linkerOutputDirectory>
+          <workingDirectory>${project.basedir}</workingDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>os/linux/x86</directory>
+              <includes>
+                <include>*.so</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
