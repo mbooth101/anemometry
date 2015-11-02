@@ -15,7 +15,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tycho.version>0.23.0</tycho.version>
+    <tycho.version>0.24.0</tycho.version>
   </properties>
 
   <!-- TODO: Remove this if/when maven-native changes get merged upstream -->
@@ -28,29 +28,23 @@
 
   <modules>
     <module>anemometry-target</module>
+    <module>uk.co.matbooth.anemometry</module>
     <module>uk.co.matbooth.anemometry.serial</module>
+    <module>uk.co.matbooth.anemometry.serial.linux.arm</module>
+    <module>uk.co.matbooth.anemometry.serial.linux.x86</module>
+    <module>uk.co.matbooth.anemometry.serial.linux.x86_64</module>
+    <module>uk.co.matbooth.anemometry.serial.macosx.x86_64</module>
   </modules>
 
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
+        <!-- Build native artifacts -->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>native-maven-plugin</artifactId>
           <version>1.0-alpha-9-SNAPSHOT</version>
           <executions>
-            <execution>
-              <id>native-initialize</id>
-              <phase>initialize</phase>
-              <goals>
-                <goal>initialize</goal>
-              </goals>
-            </execution>
             <execution>
               <id>native-javah</id>
               <phase>generate-sources</phase>
@@ -73,6 +67,24 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+        <!-- Clean native artifacts, if present -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.0.0</version>
+          <configuration>
+            <filesets>
+              <fileset>
+                <directory>os</directory>
+                <includes>
+                  <include>**/*.so</include>
+                  <include>**/*.jnilib</include>
+                  <include>**/*.dll</include>
+                </includes>
+              </fileset>
+            </filesets>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -99,6 +111,11 @@
             <environment>
               <os>linux</os>
               <ws>gtk</ws>
+              <arch>arm</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
               <arch>x86</arch>
             </environment>
             <environment>
@@ -116,38 +133,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>linux</id>
-      <activation>
-        <os>
-          <family>Linux</family>
-        </os>
-      </activation>
-      <modules>
-        <module>uk.co.matbooth.anemometry.serial.linux.x86</module>
-        <module>uk.co.matbooth.anemometry.serial.linux.x86_64</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>macosx</id>
-      <activation>
-        <os>
-          <family>Mac</family>
-        </os>
-      </activation>
-      <modules>
-        <module>uk.co.matbooth.anemometry.serial.macosx.x86_64</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>win32</id>
-      <activation>
-        <os>
-          <family>Windows</family>
-        </os>
-      </activation>
-    </profile>
-  </profiles>
 </project>

@@ -7,14 +7,14 @@
     <artifactId>anemometry-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>uk.co.matbooth.anemometry.serial.linux.x86</artifactId>
+  <artifactId>uk.co.matbooth.anemometry.serial.linux.arm</artifactId>
   <packaging>eclipse-plugin</packaging>
 
   <properties>
-    <cflags>-O2 -g -pipe -Wall -fPIC -Werror=format-security
+    <cflags>-O2 -g -pipe -Wall -Werror=format-security
       -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4
-      -m32 -fasynchronous-unwind-tables -mtune=atom -march=i686</cflags>
-    <ldflags>-m32 -shared</ldflags>
+      -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard</cflags>
+    <ldflags>-shared</ldflags>
   </properties>
 
   <dependencies>
@@ -35,7 +35,7 @@
             <environment>
               <os>linux</os>
               <ws>gtk</ws>
-              <arch>x86</arch>
+              <arch>arm</arch>
             </environment>
           </environments>
         </configuration>
@@ -45,11 +45,11 @@
 
   <profiles>
     <profile>
-      <id>linux.x86</id>
+      <id>linux.arm</id>
       <activation>
         <os>
           <family>Linux</family>
-          <arch>amd64</arch>
+          <arch>arm</arch>
         </os>
       </activation>
       <build>
@@ -81,7 +81,7 @@
               </linkerStartOptions>
               <linkerFinalName>libserial</linkerFinalName>
               <linkerFinalNameExt>so</linkerFinalNameExt>
-              <linkerOutputDirectory>os/linux/x86</linkerOutputDirectory>
+              <linkerOutputDirectory>os/linux/arm</linkerOutputDirectory>
               <workingDirectory>${project.basedir}</workingDirectory>
             </configuration>
           </plugin>
